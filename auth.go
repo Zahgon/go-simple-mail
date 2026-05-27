@@ -5,14 +5,6 @@
 
 package mail
 
-import (
-	"crypto/hmac"
-	"crypto/md5"
-	"errors"
-	"fmt"
-	"strings"
-)
-
 // auth is implemented by an SMTP authentication mechanism.
 type auth interface {
 	// start begins an authentication with a server.
@@ -54,27 +46,24 @@ type plainAuth struct {
 // or is connected to localhost. Otherwise authentication will fail with an
 // error, without sending the credentials.
 func plainAuthfn(identity, username, password, host string) auth {
-	return &plainAuth{identity, username, password, host}
+	_ = "STUB: not implemented"
+	return *new(auth)
 }
 
 func (a *plainAuth) start(server *serverInfo) (string, []byte, error) {
+	_ = "STUB: not implemented"
 	// Must have TLS, or else localhost server. Unencrypted connection is permitted here too but is not recommended
 	// Note: If TLS is not true, then we can't trust ANYTHING in serverInfo.
 	// In particular, it doesn't matter if the server advertises PLAIN auth.
 	// That might just be the attacker saying
 	// "it's ok, you can trust me with your password."
-	if server.name != a.host {
-		return "", nil, errors.New("wrong host name")
-	}
-	resp := []byte(a.identity + "\x00" + a.username + "\x00" + a.password)
-	return "PLAIN", resp, nil
+	return "", nil, nil
 }
 
 func (a *plainAuth) next(fromServer []byte, more bool) ([]byte, error) {
-	if more {
-		// We've already sent everything.
-		return nil, errors.New("unexpected server challenge")
-	}
+	_ = "STUB: not implemented"
+
+	// We've already sent everything.
 	return nil, nil
 }
 
@@ -89,34 +78,21 @@ type loginAuth struct {
 }
 
 func loginAuthfn(identity, username, password, host string) auth {
-	return &loginAuth{identity, username, password, host}
+	_ = "STUB: not implemented"
+	return *new(auth)
 }
 
 func (a *loginAuth) start(server *serverInfo) (string, []byte, error) {
-	if server.name != a.host {
-		return "", nil, errors.New("wrong host name")
-	}
-	resp := []byte(a.username)
-	return "LOGIN", resp, nil
+	_ = "STUB: not implemented"
+	return "", nil, nil
 }
 
 func (a *loginAuth) next(fromServer []byte, more bool) ([]byte, error) {
-	if more {
-		if strings.Contains(string(fromServer), "Username") {
-			resp := []byte(a.username)
-			return resp, nil
-		}
-
-		if strings.Contains(string(fromServer), "Password") {
-			resp := []byte(a.password)
-			return resp, nil
-		}
-
-		// We've already sent everything.
-		return nil, errors.New("unexpected server challenge")
-	}
+	_ = "STUB: not implemented"
 	return nil, nil
 }
+
+// We've already sent everything.
 
 type cramMD5Auth struct {
 	username, secret string
@@ -126,20 +102,14 @@ type cramMD5Auth struct {
 // mechanism as defined in RFC 2195.
 // The returned Auth uses the given username and secret to authenticate
 // to the server using the challenge-response mechanism.
-func cramMD5Authfn(username, secret string) auth {
-	return &cramMD5Auth{username, secret}
-}
+func cramMD5Authfn(username, secret string) auth { _ = "STUB: not implemented"; return *new(auth) }
 
 func (a *cramMD5Auth) start(server *serverInfo) (string, []byte, error) {
-	return "CRAM-MD5", nil, nil
+	_ = "STUB: not implemented"
+	return "", nil, nil
 }
 
 func (a *cramMD5Auth) next(fromServer []byte, more bool) ([]byte, error) {
-	if more {
-		d := hmac.New(md5.New, []byte(a.secret))
-		d.Write(fromServer)
-		s := make([]byte, 0, d.Size())
-		return []byte(fmt.Sprintf("%s %x", a.username, d.Sum(s))), nil
-	}
+	_ = "STUB: not implemented"
 	return nil, nil
 }

@@ -1,13 +1,5 @@
 package mail
 
-import (
-	"encoding/base64"
-	"errors"
-	"io/ioutil"
-	"mime"
-	"path/filepath"
-)
-
 // File represents the file that can be added to the email message.
 // You can add attachment from file in path, from base64 string or from []byte.
 // You can define if attachment is inline or not.
@@ -40,124 +32,43 @@ const (
 
 // Attach allows you to add an attachment to the email message.
 // The attachment can be inlined
-func (email *Email) Attach(file *File) *Email {
-	if email.Error != nil {
-		return email
-	}
+func (email *Email) Attach(file *File) *Email { _ = "STUB: not implemented"; return nil }
 
-	var name = file.Name
-	var mimeType = file.MimeType
+// if no alternative name was provided, get the filename
 
-	// if no alternative name was provided, get the filename
-	if len(name) == 0 && len(file.FilePath) > 0 {
-		_, name = filepath.Split(file.FilePath)
-	}
-
-	// get the mimetype
-	if mimeType == "" {
-		mimeType = mime.TypeByExtension(filepath.Ext(name))
-		if mimeType == "" {
-			mimeType = "application/octet-stream"
-		}
-	}
-
-	attachTy, err := getAttachmentType(file, email.AllowEmptyAttachments)
-	if err != nil {
-		email.Error = errors.New("Mail Error: Failed to add attachment with following error: " + err.Error())
-		return email
-	}
-
-	file.Name = name
-	file.MimeType = mimeType
-
-	switch attachTy {
-	case attachData:
-		email.attachData(file)
-	case attachB64:
-		email.Error = email.attachB64(file)
-	case attachFile:
-		email.Error = email.attachFile(file)
-	}
-
-	return email
-}
+// get the mimetype
 
 func getAttachmentType(file *File, allowEmptyAttachments bool) (attachType, error) {
+	_ = "STUB: not implemented"
 	// 1- data
 	// 2- base64
 	// 3- file
-
-	// first check if Data
-	if len(file.Data) > 0 {
-		// data requires a name
-		if len(file.Name) == 0 {
-			return 0, errors.New("attach from bytes requires a name")
-		}
-		return attachData, nil
-	}
-
-	// check if base64
-	if len(file.B64Data) > 0 {
-		// B64Data requires a name
-		if len(file.Name) == 0 {
-			return 0, errors.New("attach from base64 string requires a name")
-		}
-		return attachB64, nil
-	}
-
-	// check if file
-	if len(file.FilePath) > 0 {
-		return attachFile, nil
-	}
-
-	if allowEmptyAttachments && len(file.Name) != 0 {
-		return attachData, nil
-	}
-
-	return 0, errors.New("empty attachment")
+	return *new(attachType), nil
 }
+
+// first check if Data
+
+// data requires a name
+
+// check if base64
+
+// B64Data requires a name
+
+// check if file
 
 // attachB64 does the low level attaching of the files but decoding base64
 func (email *Email) attachB64(file *File) error {
+	_ = "STUB: not implemented"
 
 	// decode the string
-	dec, err := base64.StdEncoding.DecodeString(file.B64Data)
-	if err != nil {
-		return errors.New("Mail Error: Failed to decode base64 attachment with following error: " + err.Error())
-	}
-
-	email.attachData(&File{
-		Name:     file.Name,
-		MimeType: file.MimeType,
-		Data:     dec,
-		Inline:   file.Inline,
-	})
-
 	return nil
 }
 
-func (email *Email) attachFile(file *File) error {
-	data, err := ioutil.ReadFile(file.FilePath)
-	if err != nil {
-		return errors.New("Mail Error: Failed to add file with following error: " + err.Error())
-	}
-
-	email.attachData(&File{
-		Name:     file.Name,
-		MimeType: file.MimeType,
-		Data:     data,
-		Inline:   file.Inline,
-	})
-
-	return nil
-}
+func (email *Email) attachFile(file *File) error { _ = "STUB: not implemented"; return nil }
 
 // attachData does the low level attaching of the in-memory data
 func (email *Email) attachData(file *File) {
+	_ = "STUB: not implemented"
 	// use inlines and attachments because is necessary to know if message has related parts and mixed parts
-	if file.Inline {
-		email.inlines = append(email.inlines, file)
-	} else {
-		email.attachments = append(email.attachments, file)
-	}
+	return
 }

@@ -3,13 +3,8 @@ package mail
 import (
 	"bytes"
 	"crypto/tls"
-	"errors"
-	"fmt"
 	"net"
-	"net/mail"
 	"net/textproto"
-	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -107,9 +102,7 @@ const (
 // TODO: Remove last two indexes
 var encryptionTypes = [...]string{"None", "SSL/TLS", "STARTTLS", "SSL/TLS", "STARTTLS"}
 
-func (encryption Encryption) String() string {
-	return encryptionTypes[encryption]
-}
+func (encryption Encryption) String() string { _ = "STUB: not implemented"; return "" }
 
 type headerEncoding int
 
@@ -141,9 +134,7 @@ const (
 
 var encodingTypes = [...]string{"binary", "base64", "quoted-printable"}
 
-func (encoding encoding) string() string {
-	return encodingTypes[encoding]
-}
+func (encoding encoding) string() string { _ = "STUB: not implemented"; return "" }
 
 type ContentType int
 
@@ -160,9 +151,7 @@ const (
 
 var contentTypes = [...]string{"text/plain", "text/html", "text/calendar", "text/x-amp-html"}
 
-func (contentType ContentType) string() string {
-	return contentTypes[contentType]
-}
+func (contentType ContentType) string() string { _ = "STUB: not implemented"; return "" }
 
 type AuthType int
 
@@ -179,18 +168,7 @@ const (
 	AuthAuto
 )
 
-func (at AuthType) String() string {
-	switch at {
-	case AuthPlain:
-		return "PLAIN"
-	case AuthLogin:
-		return "LOGIN"
-	case AuthCRAMMD5:
-		return "CRAM-MD5"
-	default:
-		return ""
-	}
-}
+func (at AuthType) String() string { _ = "STUB: not implemented"; return "" }
 
 /*
 	DSN notifications
@@ -216,241 +194,92 @@ const (
 
 var dsnTypes = [...]string{"NEVER", "FAILURE", "DELAY", "SUCCESS"}
 
-func (dsn DSN) String() string {
-	return dsnTypes[dsn]
-}
+func (dsn DSN) String() string { _ = "STUB: not implemented"; return "" }
 
 // NewMSG creates a new email. It uses UTF-8 by default. All charsets: http://webcheatsheet.com/HTML/character_sets_list.php
-func NewMSG() *Email {
-	email := &Email{
-		headers:        make(textproto.MIMEHeader),
-		Charset:        "UTF-8",
-		Encoding:       EncodingQuotedPrintable,
-		HeaderEncoding: HeaderEncodingQ,
-	}
-
-	email.AddHeader("MIME-Version", "1.0")
-
-	return email
-}
+func NewMSG() *Email { _ = "STUB: not implemented"; return nil }
 
 // NewSMTPClient returns the client for send email
-func NewSMTPClient() *SMTPServer {
-	server := &SMTPServer{
-		Authentication: AuthAuto,
-		Encryption:     EncryptionNone,
-		ConnectTimeout: 10 * time.Second,
-		SendTimeout:    10 * time.Second,
-		Helo:           "localhost",
-	}
-	return server
-}
+func NewSMTPClient() *SMTPServer { _ = "STUB: not implemented"; return nil }
 
 // GetEncryptionType returns the encryption type used to connect to SMTP server
 func (server *SMTPServer) GetEncryptionType() Encryption {
-	return server.Encryption
+	_ = "STUB: not implemented"
+	return *
+
+	// GetError returns the first email error encountered
+	new(Encryption)
 }
 
-// GetError returns the first email error encountered
 func (email *Email) GetError() error {
-	return email.Error
+	_ = "STUB: not implemented"
+
+	// SetFrom sets the From address.
+	return nil
 }
 
-// SetFrom sets the From address.
-func (email *Email) SetFrom(address string) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	email.AddAddresses("From", address)
-
-	return email
-}
+func (email *Email) SetFrom(address string) *Email { _ = "STUB: not implemented"; return nil }
 
 // SetSender sets the Sender address.
-func (email *Email) SetSender(address string) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	email.AddAddresses("Sender", address)
-
-	return email
-}
+func (email *Email) SetSender(address string) *Email { _ = "STUB: not implemented"; return nil }
 
 // SetReplyTo sets the Reply-To address.
-func (email *Email) SetReplyTo(address string) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	email.AddAddresses("Reply-To", address)
-
-	return email
-}
+func (email *Email) SetReplyTo(address string) *Email { _ = "STUB: not implemented"; return nil }
 
 // SetReturnPath sets the Return-Path address. This is most often used
 // to send bounced emails to a different email address.
-func (email *Email) SetReturnPath(address string) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	email.AddAddresses("Return-Path", address)
-
-	return email
-}
+func (email *Email) SetReturnPath(address string) *Email { _ = "STUB: not implemented"; return nil }
 
 // AddTo adds a To address. You can provide multiple
 // addresses at the same time.
-func (email *Email) AddTo(addresses ...string) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	email.AddAddresses("To", addresses...)
-
-	return email
-}
+func (email *Email) AddTo(addresses ...string) *Email { _ = "STUB: not implemented"; return nil }
 
 // AddCc adds a Cc address. You can provide multiple
 // addresses at the same time.
-func (email *Email) AddCc(addresses ...string) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	email.AddAddresses("Cc", addresses...)
-
-	return email
-}
+func (email *Email) AddCc(addresses ...string) *Email { _ = "STUB: not implemented"; return nil }
 
 // AddBcc adds a Bcc address. You can provide multiple
 // addresses at the same time.
-func (email *Email) AddBcc(addresses ...string) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	email.AddAddresses("Bcc", addresses...)
-
-	return email
-}
+func (email *Email) AddBcc(addresses ...string) *Email { _ = "STUB: not implemented"; return nil }
 
 // AddAddresses allows you to add addresses to the specified address header.
 func (email *Email) AddAddresses(header string, addresses ...string) *Email {
-	var err error
-
-	if email.Error != nil {
-		return email
-	}
-
-	found := false
-
-	// check for a valid address header
-	for _, h := range []string{"To", "Cc", "Bcc", "From", "Sender", "Reply-To", "Return-Path"} {
-		if header == h {
-			found = true
-		}
-	}
-
-	if !found {
-		email.Error = errors.New("Mail Error: Invalid address header; Header: [" + header + "]")
-		return email
-	}
-
-	// check to see if the addresses are valid
-	for i, address := range addresses {
-		fullAddress := address
-
-		// ignore empty addresses
-		if len(addresses[i]) > 0 {
-			if !email.UseProvidedAddress {
-				parsed, err := mail.ParseAddress(addresses[i])
-				if err != nil {
-					email.Error = errors.New("Mail Error: " + err.Error() + "; Header: [" + header + "] Address: [" + addresses[i] + "]")
-					return email
-				}
-
-				address = parsed.Address
-				fullAddress = parsed.String()
-			}
-		} else {
-			continue
-		}
-
-		// check for more than one address
-		switch {
-		case header == "Sender" && len(email.sender) > 0:
-			fallthrough
-		case header == "Reply-To" && len(email.replyTo) > 0:
-			fallthrough
-		case header == "Return-Path" && len(email.returnPath) > 0:
-			email.Error = errors.New("Mail Error: There can only be one \"" + header + "\" address; Header: [" + header + "] Address: [" + addresses[i] + "]")
-			return email
-		default:
-			// other address types can have more than one address
-		}
-
-		// save the address
-		switch header {
-		case "From":
-			// delete the current "From" to set the new
-			// when "From" need to be changed in the message
-			if len(email.from) > 0 && header == "From" {
-				email.headers.Del("From")
-			}
-			email.from = address
-		case "Sender":
-			email.sender = address
-		case "Reply-To":
-			email.replyTo = address
-		case "Return-Path":
-			email.returnPath = address
-		default:
-			// check that the address was added to the recipients list
-			email.recipients, err = addAddress(email.recipients, address, email.AllowDuplicateAddress)
-			if err != nil {
-				email.Error = errors.New("Mail Error: " + err.Error() + "; Header: [" + header + "] Address: [" + addresses[i] + "]")
-				return email
-			}
-		}
-
-		// make sure the from and sender addresses are different
-		if email.from != "" && email.sender != "" && email.from == email.sender {
-			email.sender = ""
-			email.headers.Del("Sender")
-			email.Error = errors.New("Mail Error: From and Sender should not be set to the same address")
-			return email
-		}
-
-		// add Bcc only if AddBccToHeader is true
-		if header == "Bcc" && email.AddBccToHeader {
-			email.headers.Add(header, fullAddress)
-		}
-
-		// add all addresses to the headers except for Bcc and Return-Path
-		if header != "Bcc" && header != "Return-Path" {
-			// add the address to the headers
-			email.headers.Add(header, fullAddress)
-		}
-	}
-
-	return email
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// check for a valid address header
+
+// check to see if the addresses are valid
+
+// ignore empty addresses
+
+// check for more than one address
+
+// other address types can have more than one address
+
+// save the address
+
+// delete the current "From" to set the new
+// when "From" need to be changed in the message
+
+// check that the address was added to the recipients list
+
+// make sure the from and sender addresses are different
+
+// add Bcc only if AddBccToHeader is true
+
+// add all addresses to the headers except for Bcc and Return-Path
+
+// add the address to the headers
 
 // addAddress adds an address to the address list if it hasn't already been added
 func addAddress(addressList []string, address string, allowDuplicateAddress bool) ([]string, error) {
-	if !allowDuplicateAddress {
-		// loop through the address list to check for dups
-		for _, a := range addressList {
-			if address == a {
-				return addressList, errors.New("Mail Error: Address: [" + address + "] has already been added")
-			}
-		}
-	}
+	_ = "STUB: not implemented"
+	return nil,
 
-	return append(addressList, address), nil
+		// loop through the address list to check for dups
+		nil
 }
 
 type Priority int
@@ -464,184 +293,54 @@ const (
 
 // SetPriority sets the email message Priority. Use with
 // either "High" or "Low".
-func (email *Email) SetPriority(priority Priority) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	switch priority {
-	case PriorityLow:
-		email.AddHeaders(textproto.MIMEHeader{
-			"X-Priority":        {"5 (Lowest)"},
-			"X-MSMail-Priority": {"Low"},
-			"Importance":        {"Low"},
-		})
-	case PriorityHigh:
-		email.AddHeaders(textproto.MIMEHeader{
-			"X-Priority":        {"1 (Highest)"},
-			"X-MSMail-Priority": {"High"},
-			"Importance":        {"High"},
-		})
-	default:
-	}
-
-	return email
-}
+func (email *Email) SetPriority(priority Priority) *Email { _ = "STUB: not implemented"; return nil }
 
 // SetDate sets the date header to the provided date/time.
 // The format of the string should be YYYY-MM-DD HH:MM:SS Time Zone.
 //
 // Example: SetDate("2015-04-28 10:32:00 CDT")
-func (email *Email) SetDate(dateTime string) *Email {
-	if email.Error != nil {
-		return email
-	}
+func (email *Email) SetDate(dateTime string) *Email { _ = "STUB: not implemented"; return nil }
 
-	const dateFormat = "2006-01-02 15:04:05 MST"
-
-	// Try to parse the provided date/time
-	dt, err := time.Parse(dateFormat, dateTime)
-	if err != nil {
-		email.Error = errors.New("Mail Error: Setting date failed with: " + err.Error())
-		return email
-	}
-
-	email.headers.Set("Date", dt.Format(time.RFC1123Z))
-
-	return email
-}
+// Try to parse the provided date/time
 
 // SetSubject sets the subject of the email message.
-func (email *Email) SetSubject(subject string) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	email.AddHeader("Subject", subject)
-
-	return email
-}
+func (email *Email) SetSubject(subject string) *Email { _ = "STUB: not implemented"; return nil }
 
 // SetListUnsubscribe sets the Unsubscribe address.
 func (email *Email) SetListUnsubscribe(address string) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	email.AddHeader("List-Unsubscribe", address)
-
-	return email
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // SetDkim adds DomainKey signature to the email message (header+body)
-func (email *Email) SetDkim(options dkim.SigOptions) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	msg := []byte(email.GetMessage())
-	err := dkim.Sign(&msg, options)
-
-	if err != nil {
-		email.Error = errors.New("Mail Error: cannot dkim sign message due: %s" + err.Error())
-		return email
-	}
-
-	email.DkimMsg = string(msg)
-
-	return email
-}
+func (email *Email) SetDkim(options dkim.SigOptions) *Email { _ = "STUB: not implemented"; return nil }
 
 // SetBody sets the body of the email message.
 func (email *Email) SetBody(contentType ContentType, body string) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	email.parts = []part{
-		{
-			contentType: contentType.string(),
-			body:        bytes.NewBufferString(body),
-		},
-	}
-
-	return email
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // SetBodyData sets the body of the email message from []byte
 func (email *Email) SetBodyData(contentType ContentType, body []byte) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	email.parts = []part{
-		{
-			contentType: contentType.string(),
-			body:        bytes.NewBuffer(body),
-		},
-	}
-
-	return email
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // AddHeader adds the given "header" with the passed "value".
 func (email *Email) AddHeader(header string, values ...string) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	// check that there is actually a value
-	if len(values) < 1 {
-		email.Error = errors.New("Mail Error: no value provided; Header: [" + header + "]")
-		return email
-	}
-
-	if header != "MIME-Version" {
-		// Set header to correct canonical Mime
-		header = textproto.CanonicalMIMEHeaderKey(header)
-	}
-
-	switch header {
-	case "Sender":
-		fallthrough
-	case "From":
-		fallthrough
-	case "To":
-		fallthrough
-	case "Bcc":
-		fallthrough
-	case "Cc":
-		fallthrough
-	case "Reply-To":
-		fallthrough
-	case "Return-Path":
-		email.AddAddresses(header, values...)
-	case "Date":
-		if len(values) > 1 {
-			email.Error = errors.New("Mail Error: To many dates provided")
-			return email
-		}
-		email.SetDate(values[0])
-	case "List-Unsubscribe":
-		fallthrough
-	default:
-		email.headers[header] = values
-	}
-
-	return email
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// check that there is actually a value
+
+// Set header to correct canonical Mime
 
 // AddHeaders is used to add multiple headers at once
 func (email *Email) AddHeaders(headers textproto.MIMEHeader) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	for header, values := range headers {
-		email.AddHeader(header, values...)
-	}
-
-	return email
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // AddAlternative allows you to add alternative parts to the body
@@ -649,18 +348,8 @@ func (email *Email) AddHeaders(headers textproto.MIMEHeader) *Email {
 // html version in addition to a plain text version that was
 // already added with SetBody.
 func (email *Email) AddAlternative(contentType ContentType, body string) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	email.parts = append(email.parts,
-		part{
-			contentType: contentType.string(),
-			body:        bytes.NewBufferString(body),
-		},
-	)
-
-	return email
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // AddAlternativeData allows you to add alternative parts to the body
@@ -668,464 +357,139 @@ func (email *Email) AddAlternative(contentType ContentType, body string) *Email 
 // html version in addition to a plain text version that was
 // already added with SetBody.
 func (email *Email) AddAlternativeData(contentType ContentType, body []byte) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	email.parts = append(email.parts,
-		part{
-			contentType: contentType.string(),
-			body:        bytes.NewBuffer(body),
-		},
-	)
-
-	return email
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // SetDSN sets the delivery status notification list, only is set when SMTP server supports DSN extension
 //
 // To preserve the original recipient of an email message, for example, if it is forwarded to another address, set preserveOriginalRecipient to true
 func (email *Email) SetDSN(dsn []DSN, preserveOriginalRecipient bool) *Email {
-	if email.Error != nil {
-		return email
-	}
-
-	email.dsn = dsn
-	email.preserveOriginalRecipient = preserveOriginalRecipient
-
-	return email
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // GetFrom returns the sender of the email, if any
-func (email *Email) GetFrom() string {
-	from := email.returnPath
-	if from == "" {
-		from = email.sender
-		if from == "" {
-			from = email.from
-			if from == "" {
-				from = email.replyTo
-			}
-		}
-	}
-
-	return from
-}
+func (email *Email) GetFrom() string { _ = "STUB: not implemented"; return "" }
 
 // GetRecipients returns a slice of recipients emails
-func (email *Email) GetRecipients() []string {
-	return email.recipients
-}
+func (email *Email) GetRecipients() []string { _ = "STUB: not implemented"; return nil }
 
-func (email *Email) hasMixedPart() bool {
-	return (len(email.parts) > 0 && len(email.attachments) > 0) || len(email.attachments) > 1
-}
+func (email *Email) hasMixedPart() bool { _ = "STUB: not implemented"; return false }
 
-func (email *Email) hasRelatedPart() bool {
-	return (len(email.parts) > 0 && len(email.inlines) > 0) || len(email.inlines) > 1
-}
+func (email *Email) hasRelatedPart() bool { _ = "STUB: not implemented"; return false }
 
-func (email *Email) hasAlternativePart() bool {
-	return len(email.parts) > 1
-}
+func (email *Email) hasAlternativePart() bool { _ = "STUB: not implemented"; return false }
 
 // GetMessage builds and returns the email message (RFC822 formatted message)
-func (email *Email) GetMessage() string {
-	msg := newMessage(email)
-
-	if email.hasMixedPart() {
-		msg.openMultipart("mixed")
-	}
-
-	if email.hasRelatedPart() {
-		msg.openMultipart("related")
-	}
-
-	if email.hasAlternativePart() {
-		msg.openMultipart("alternative")
-	}
-
-	for _, part := range email.parts {
-		msg.addBody(part.contentType, part.body.Bytes())
-	}
-
-	if email.hasAlternativePart() {
-		msg.closeMultipart()
-	}
-
-	msg.addFiles(email.inlines, true)
-	if email.hasRelatedPart() {
-		msg.closeMultipart()
-	}
-
-	msg.addFiles(email.attachments, false)
-	if email.hasMixedPart() {
-		msg.closeMultipart()
-	}
-
-	return msg.getHeaders() + msg.body.String()
-}
+func (email *Email) GetMessage() string { _ = "STUB: not implemented"; return "" }
 
 // Send sends the composed email
-func (email *Email) Send(client *SMTPClient) error {
-	return email.SendEnvelopeFrom(email.from, client)
-}
+func (email *Email) Send(client *SMTPClient) error { _ = "STUB: not implemented"; return nil }
 
 // SendEnvelopeFrom sends the composed email with envelope
 // sender. 'from' must be an email address.
 func (email *Email) SendEnvelopeFrom(from string, client *SMTPClient) error {
-	if email.Error != nil {
-		return email.Error
-	}
-
-	if from == "" {
-		from = email.from
-	}
-
-	if len(email.recipients) < 1 {
-		return errors.New("Mail Error: No recipient specified")
-	}
-
-	var msg string
-	if email.DkimMsg != "" {
-		msg = email.DkimMsg
-	} else {
-		msg = email.GetMessage()
-	}
-
-	client.dsn = email.dsn
-	client.preserveOriginalRecipient = email.preserveOriginalRecipient
-
-	return send(from, email.recipients, msg, client)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // dial connects to the smtp server with the request encryption type
 func dial(customConn net.Conn, host string, port string, encryption Encryption, config *tls.Config) (*smtpClient, error) {
-	var conn net.Conn
-	var err error
-	var c *smtpClient
-
-	if customConn != nil {
-		conn = customConn
-	} else {
-		address := host + ":" + port
-		// do the actual dial
-		switch encryption {
-		// TODO: Remove EncryptionSSL check before launch v3
-		case EncryptionSSL, EncryptionSSLTLS:
-			conn, err = tls.Dial("tcp", address, config)
-		default:
-			conn, err = net.Dial("tcp", address)
-		}
-
-		if err != nil {
-			return nil, errors.New("Mail Error on dialing with encryption type " + encryption.String() + ": " + err.Error())
-		}
-	}
-
-	c, err = newClient(conn, host)
-	if err != nil {
-		return nil, fmt.Errorf("Mail Error on smtp dial: %w", err)
-	}
-
-	return c, err
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// do the actual dial
+
+// TODO: Remove EncryptionSSL check before launch v3
 
 // smtpConnect connects to the smtp server and starts TLS and passes auth
 // if necessary
 func smtpConnect(customConn net.Conn, host, port, helo string, encryption Encryption, config *tls.Config) (*smtpClient, error) {
+	_ = "STUB: not implemented"
 	// connect to the mail server
-	c, err := dial(customConn, host, port, encryption, config)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if helo == "" {
-		helo = "localhost"
-	}
-
-	// send Helo
-	if err = c.hi(helo); err != nil {
-		c.close()
-		return nil, fmt.Errorf("Mail Error on Hello: %w", err)
-	}
-
-	// STARTTLS if necessary
-	// TODO: Remove EncryptionTLS check before launch v3
-	if encryption == EncryptionTLS || encryption == EncryptionSTARTTLS {
-		if ok, _ := c.extension("STARTTLS"); ok {
-			if err = c.startTLS(config); err != nil {
-				c.close()
-				return nil, fmt.Errorf("Mail Error on STARTTLS: %w", err)
-			}
-		}
-	}
-
-	return c, nil
+	return nil, nil
 }
+
+// send Helo
+
+// STARTTLS if necessary
+// TODO: Remove EncryptionTLS check before launch v3
 
 func (server *SMTPServer) getAuth(a string) (auth, error) {
-	var afn auth
-	switch {
-	case strings.Contains(a, AuthPlain.String()):
-		if server.Username != "" || server.Password != "" {
-			afn = plainAuthfn("", server.Username, server.Password, server.Host)
-		}
-	case strings.Contains(a, AuthLogin.String()):
-		if server.Username != "" || server.Password != "" {
-			afn = loginAuthfn("", server.Username, server.Password, server.Host)
-		}
-	case strings.Contains(a, AuthCRAMMD5.String()):
-		if server.Username != "" || server.Password != "" {
-			afn = cramMD5Authfn(server.Username, server.Password)
-		}
-	default:
-		return nil, fmt.Errorf("Mail Error on determining auth type, %s is not supported", a)
-	}
-	return afn, nil
+	_ = "STUB: not implemented"
+	return *new(auth), nil
 }
 
-func (server *SMTPServer) validateAuth(c *smtpClient) error {
-	var err error
-	var afn auth
-	switch {
-	case server.Authentication == AuthNone || server.Username == "":
-		return nil
-	case server.Authentication != AuthAuto:
-		afn, err = server.getAuth(server.Authentication.String())
-		if err != nil {
-			return err
-		}
-	}
-	if ok, a := c.extension("AUTH"); ok {
-		// Determine Auth type automatically from extension
-		if afn == nil {
-			afn, err = server.getAuth(a)
-			if err != nil {
-				return err
-			}
-		}
-		if err = c.authenticate(afn); err != nil {
-			c.close()
-			return fmt.Errorf("Mail Error on Auth: %w", err)
-		}
-	}
-	return nil
-}
+func (server *SMTPServer) validateAuth(c *smtpClient) error { _ = "STUB: not implemented"; return nil }
+
+// Determine Auth type automatically from extension
 
 // Connect returns the smtp client
 func (server *SMTPServer) Connect() (*SMTPClient, error) {
-	var smtpConnectChannel chan error
-	var c *smtpClient
-	var err error
-
-	tlsConfig := server.TLSConfig
-	if tlsConfig == nil {
-		tlsConfig = &tls.Config{ServerName: server.Host}
-	}
-
-	// if there is a ConnectTimeout, setup the channel and do the connect under a goroutine
-	if server.ConnectTimeout != 0 {
-		smtpConnectChannel = make(chan error, 2)
-		go func() {
-			c, err = smtpConnect(server.CustomConn, server.Host, fmt.Sprintf("%d", server.Port), server.Helo, server.Encryption, tlsConfig)
-			// send the result
-			smtpConnectChannel <- err
-		}()
-		// get the connect result or timeout result, which ever happens first
-		select {
-		case err = <-smtpConnectChannel:
-			if err != nil {
-				return nil, err
-			}
-		case <-time.After(server.ConnectTimeout):
-			return nil, errors.New("Mail Error: SMTP Connection timed out")
-		}
-	} else {
-		// no ConnectTimeout, just fire the connect
-		c, err = smtpConnect(server.CustomConn, server.Host, fmt.Sprintf("%d", server.Port), server.Helo, server.Encryption, tlsConfig)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	_, hasDSN := c.ext["DSN"]
-
-	return &SMTPClient{
-		Client:      c,
-		KeepAlive:   server.KeepAlive,
-		SendTimeout: server.SendTimeout,
-		hasDSNExt:   hasDSN,
-	}, server.validateAuth(c)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// if there is a ConnectTimeout, setup the channel and do the connect under a goroutine
+
+// send the result
+
+// get the connect result or timeout result, which ever happens first
+
+// no ConnectTimeout, just fire the connect
 
 // Reset send RSET command to smtp client
-func (smtpClient *SMTPClient) Reset() error {
-	smtpClient.mu.Lock()
-	defer smtpClient.mu.Unlock()
-	return smtpClient.Client.reset()
-}
+func (smtpClient *SMTPClient) Reset() error { _ = "STUB: not implemented"; return nil }
 
 // Noop send NOOP command to smtp client
-func (smtpClient *SMTPClient) Noop() error {
-	smtpClient.mu.Lock()
-	defer smtpClient.mu.Unlock()
-	return smtpClient.Client.noop()
-}
+func (smtpClient *SMTPClient) Noop() error { _ = "STUB: not implemented"; return nil }
 
 // Quit send QUIT command to smtp client
-func (smtpClient *SMTPClient) Quit() error {
-	smtpClient.mu.Lock()
-	defer smtpClient.mu.Unlock()
-	return smtpClient.Client.quit()
-}
+func (smtpClient *SMTPClient) Quit() error { _ = "STUB: not implemented"; return nil }
 
 // Close closes the connection
-func (smtpClient *SMTPClient) Close() error {
-	smtpClient.mu.Lock()
-	defer smtpClient.mu.Unlock()
-	return smtpClient.Client.close()
-}
+func (smtpClient *SMTPClient) Close() error { _ = "STUB: not implemented"; return nil }
 
 // SendMessage sends a message (a RFC822 formatted message)
 // 'from' must be an email address, recipients must be a slice of email address
 func SendMessage(from string, recipients []string, msg string, client *SMTPClient) error {
-	if from == "" {
-		return errors.New("Mail Error: No From email specifier")
-	}
-	if len(recipients) < 1 {
-		return errors.New("Mail Error: No recipient specified")
-	}
-
-	return send(from, recipients, msg, client)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // send does the low level sending of the email
 func send(from string, to []string, msg string, client *SMTPClient) error {
+	_ = "STUB: not implemented"
 	//Check if client struct is not nil
-	if client != nil {
-
-		//Check if client is not nil
-		if client.Client != nil {
-			var smtpSendChannel chan error
-
-			// if there is a SendTimeout, setup the channel and do the send under a goroutine
-			if client.SendTimeout != 0 {
-				smtpSendChannel = make(chan error, 1)
-
-				go func(from string, to []string, msg string, client *SMTPClient) {
-					smtpSendChannel <- sendMailProcess(from, to, msg, client)
-				}(from, to, msg, client)
-			}
-
-			if client.SendTimeout == 0 {
-				// no SendTimeout, just fire the sendMailProcess
-				return sendMailProcess(from, to, msg, client)
-			}
-
-			// get the send result or timeout result, which ever happens first
-			select {
-			case sendError := <-smtpSendChannel:
-				checkKeepAlive(client)
-				return sendError
-			case <-time.After(client.SendTimeout):
-				checkKeepAlive(client)
-				return errors.New("Mail Error: SMTP Send timed out")
-			}
-		}
-	}
-
-	return errors.New("Mail Error: No SMTP Client Provided")
-}
-
-func sendMailProcess(from string, to []string, msg string, c *SMTPClient) error {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-
-	cmdArgs := make(map[string]string)
-
-	if _, ok := c.Client.ext["SIZE"]; ok {
-		cmdArgs["SIZE"] = strconv.Itoa(len(msg))
-	}
-
-	// Set the sender
-	if err := c.Client.mail(from, cmdArgs); err != nil {
-		return err
-	}
-
-	var dsn string
-	var dsnSet bool
-
-	if c.hasDSNExt && len(c.dsn) > 0 {
-		dsn = " NOTIFY="
-		if hasNeverDSN(c.dsn) {
-			dsn += NEVER.String()
-		} else {
-			dsn += strings.Join(dsnToString(c.dsn), ",")
-		}
-
-		if c.preserveOriginalRecipient {
-			dsn += " ORCPT=rfc822;"
-		}
-
-		dsnSet = true
-	}
-
-	// Set the recipients
-	for _, address := range to {
-		if dsnSet && c.preserveOriginalRecipient {
-			dsn += address
-		}
-
-		if err := c.Client.rcpt(address, dsn); err != nil {
-			return err
-		}
-	}
-
-	// Send the data command
-	w, err := c.Client.data()
-	if err != nil {
-		return err
-	}
-
-	// write the message
-	_, err = fmt.Fprint(w, msg)
-	if err != nil {
-		return err
-	}
-
-	err = w.Close()
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 
+//Check if client is not nil
+
+// if there is a SendTimeout, setup the channel and do the send under a goroutine
+
+// no SendTimeout, just fire the sendMailProcess
+
+// get the send result or timeout result, which ever happens first
+
+func sendMailProcess(from string, to []string, msg string, c *SMTPClient) error {
+	_ = "STUB: not implemented"
+	return nil
+}
+
+// Set the sender
+
+// Set the recipients
+
+// Send the data command
+
+// write the message
+
 // check if keepAlive for close or reset
-func checkKeepAlive(client *SMTPClient) {
-	if client.KeepAlive {
-		client.Reset()
-	} else {
-		client.Quit()
-		client.Close()
-	}
-}
+func checkKeepAlive(client *SMTPClient) { _ = "STUB: not implemented"; return }
 
-func hasNeverDSN(dsnList []DSN) bool {
-	for i := range dsnList {
-		if dsnList[i] == NEVER {
-			return true
-		}
-	}
-	return false
-}
+func hasNeverDSN(dsnList []DSN) bool { _ = "STUB: not implemented"; return false }
 
-func dsnToString(dsnList []DSN) []string {
-	dsnString := make([]string, len(dsnList))
-	for i := range dsnList {
-		dsnString[i] = dsnList[i].String()
-	}
-	return dsnString
-}
+func dsnToString(dsnList []DSN) []string { _ = "STUB: not implemented"; return nil }
